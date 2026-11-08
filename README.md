@@ -134,6 +134,8 @@ Admins can publish an announcement with **Send an in-app notification to every a
 
 The hosted database and persistent disk are separate from this development folder. Existing local records in `instance/future_tech_innovision.db` and files in `uploads/` do **not** transfer automatically when you first deploy. Do not delete the local copies; a planned database-and-files migration is needed if you want to carry existing entries into the hosted system. New hosted entries persist across normal application redeploys as long as you retain the same database and disk.
 
+To copy the local SQLite application records into an already-deployed PostgreSQL database, run `.\.venv\Scripts\python.exe scripts\migrate_local_sqlite_to_postgres.py` from PowerShell on Windows (or `python scripts/migrate_local_sqlite_to_postgres.py` on macOS/Linux). The script asks for the Render admin username/password and Neon PostgreSQL connection string without echoing passwords or the connection string. It verifies the local admin account, then requires typing `REPLACE` before it replaces application tables in the destination database in one transaction. This is destructive to data currently in the hosted application; make a backup first and run it only against the intended database. The script copies database records only—not files from `uploads/`. Re-upload branding and certificate assets separately. Render Free has no persistent disk, so uploaded files there may be lost after a restart or redeploy.
+
 This workspace has not been published or deployed: deployment needs your private GitHub repository and Render account. Never paste passwords or database URLs into chat; enter them only in Render's private environment settings.
 
 ## 7. Tests
