@@ -5940,7 +5940,7 @@ def branding():
 
 @main.route("/branding/<filename>")
 def branding_asset(filename):
-    default_assets = {"club_logo.png", "college_logo.jpg"}
+    default_assets = {"club_logo.jpg", "college_logo.png", "header.png"}
     allowed_files = {
         setting.value
         for setting in SiteSetting.query.filter(

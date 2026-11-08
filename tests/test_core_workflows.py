@@ -4617,13 +4617,26 @@ class CoreWorkflowTests(unittest.TestCase):
                 if path == "/admin/users":
                     self.assertIn(b"Select one or two teams for this coordinator.", response.data)
 
-    def test_default_branding_logos_render_without_uploaded_files(self):
+    def test_default_branding_assets_render_without_uploaded_files(self):
+        with self.app.app_context():
+            db.session.add_all(
+                [
+                    SiteSetting(key="college_logo", value="college_logo.jpg"),
+                    SiteSetting(key="club_logo", value="club_logo.png"),
+                    SiteSetting(
+                        key="college_banner_image", value="old_uploaded_header.png"
+                    ),
+                ]
+            )
+            db.session.commit()
+
         response = self.client.get("/login")
         self.assertEqual(response.status_code, 200)
-        self.assertIn(b"/branding/college_logo.jpg", response.data)
-        self.assertIn(b"/branding/club_logo.png", response.data)
+        self.assertIn(b"/branding/college_logo.png", response.data)
+        self.assertIn(b"/branding/club_logo.jpg", response.data)
+        self.assertIn(b"/branding/header.png", response.data)
 
-        for filename in ("college_logo.jpg", "club_logo.png"):
+        for filename in ("college_logo.png", "club_logo.jpg", "header.png"):
             with self.subTest(filename=filename):
                 asset = self.client.get(f"/branding/{filename}")
                 self.assertEqual(asset.status_code, 200)

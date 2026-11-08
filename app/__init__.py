@@ -137,6 +137,18 @@ def register_template_context(app):
         from flask_login import current_user
         from .models import SiteSetting
         settings = {setting.key: setting.value for setting in SiteSetting.query.all()}
+
+        def branding_asset(setting_key, default_filename):
+            filename = settings.get(setting_key, "")
+            uploaded_path = os.path.join(
+                app.config["UPLOAD_FOLDER"], "branding", filename
+            )
+            return (
+                filename
+                if filename and os.path.isfile(uploaded_path)
+                else default_filename
+            )
+
         unread_notifications = 0
         recent_notifications = []
         if current_user.is_authenticated:
@@ -153,9 +165,11 @@ def register_template_context(app):
                 "college_header", "N K Orchid College of Engineering and Technology"
             ) or "N K Orchid College of Engineering and Technology",
             "college_subtitle": settings.get("college_subtitle") or "Solapur",
-            "club_logo": settings.get("club_logo") or "club_logo.png",
-            "college_logo": settings.get("college_logo") or "college_logo.jpg",
-            "college_banner_image": settings.get("college_banner_image", ""),
+            "club_logo": branding_asset("club_logo", "club_logo.jpg"),
+            "college_logo": branding_asset("college_logo", "college_logo.png"),
+            "college_banner_image": branding_asset(
+                "college_banner_image", "header.png"
+            ),
             "unread_notification_count": unread_notifications,
             "recent_notifications": recent_notifications,
             "notification_count_label": (
