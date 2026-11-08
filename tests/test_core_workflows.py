@@ -4635,6 +4635,7 @@ class CoreWorkflowTests(unittest.TestCase):
         self.assertIn(b"/branding/college_logo.png", response.data)
         self.assertIn(b"/branding/club_logo.jpg", response.data)
         self.assertIn(b"/branding/header.png", response.data)
+        self.assertIn(b"/static/branding/favicon.png?v=1", response.data)
 
         for filename in ("college_logo.png", "club_logo.jpg", "header.png"):
             with self.subTest(filename=filename):
