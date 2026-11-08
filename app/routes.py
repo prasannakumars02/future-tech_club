@@ -5940,6 +5940,7 @@ def branding():
 
 @main.route("/branding/<filename>")
 def branding_asset(filename):
+    default_assets = {"club_logo.png", "college_logo.jpg"}
     allowed_files = {
         setting.value
         for setting in SiteSetting.query.filter(
@@ -5947,13 +5948,18 @@ def branding_asset(filename):
                 ["club_logo", "college_logo", "college_banner_image"]
             )
         ).all()
-    }
+    } | default_assets
     if filename not in allowed_files:
         abort(404)
-    return send_from_directory(
-        os.path.join(current_app.config["UPLOAD_FOLDER"], "branding"),
-        filename,
-    )
+    upload_directory = os.path.join(current_app.config["UPLOAD_FOLDER"], "branding")
+    if os.path.isfile(os.path.join(upload_directory, filename)):
+        return send_from_directory(upload_directory, filename)
+    if filename in default_assets:
+        return send_from_directory(
+            os.path.join(current_app.static_folder, "branding"),
+            filename,
+        )
+    abort(404)
 
 
 @main.route("/admin/cancel-published-results", methods=["POST"])

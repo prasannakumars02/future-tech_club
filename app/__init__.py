@@ -151,10 +151,10 @@ def register_template_context(app):
         return {
             "college_header": settings.get(
                 "college_header", "N K Orchid College of Engineering and Technology"
-            ),
-            "college_subtitle": settings.get("college_subtitle", "Solapur"),
-            "club_logo": settings.get("club_logo", ""),
-            "college_logo": settings.get("college_logo", ""),
+            ) or "N K Orchid College of Engineering and Technology",
+            "college_subtitle": settings.get("college_subtitle") or "Solapur",
+            "club_logo": settings.get("club_logo") or "club_logo.png",
+            "college_logo": settings.get("college_logo") or "college_logo.jpg",
             "college_banner_image": settings.get("college_banner_image", ""),
             "unread_notification_count": unread_notifications,
             "recent_notifications": recent_notifications,

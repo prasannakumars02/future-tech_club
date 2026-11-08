@@ -4617,6 +4617,19 @@ class CoreWorkflowTests(unittest.TestCase):
                 if path == "/admin/users":
                     self.assertIn(b"Select one or two teams for this coordinator.", response.data)
 
+    def test_default_branding_logos_render_without_uploaded_files(self):
+        response = self.client.get("/login")
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(b"/branding/college_logo.jpg", response.data)
+        self.assertIn(b"/branding/club_logo.png", response.data)
+
+        for filename in ("college_logo.jpg", "club_logo.png"):
+            with self.subTest(filename=filename):
+                asset = self.client.get(f"/branding/{filename}")
+                self.assertEqual(asset.status_code, 200)
+                self.assertGreater(len(asset.data), 0)
+                asset.close()
+
     def test_coordinator_can_only_mark_attendance_for_assigned_teams(self):
         with self.app.app_context():
             teams = Team.query.filter(Team.team_code.in_(["FT_01", "FT_02"])).order_by(Team.team_code).all()
